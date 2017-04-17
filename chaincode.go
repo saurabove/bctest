@@ -65,12 +65,15 @@ type Transaction struct {
 type Operation struct {
 	RefNumber	string		`json:"RefNumber"`
 	Date 		time.Time	`json:"Date"`
-	VIN		string		`json:"VIN"`
-	Subsystem	string		`json:"Subsystem"`
+	VIN		string		`json:"VIN"` // assetnum
+	Subsystem	string		`json:"Subsystem"`//nil
 	Description	string		`json:"Description"`
-	Version		string		`json:"Version"`
-	StatusCode	int		`json:"StatusCode"`
-	StatusMsg	string		`json:"StatusMsg"`
+	Version		string		`json:"Version"`//
+	StatusCode	int		`json:"StatusCode"`//
+	Optype     string     `json:"Optype"`//   
+	StatusMsg	string		`json:"StatusMsg"`//state
+	To			string   `json:"ToPresp"`
+	From		string   `json:"FromPres"`
 }
 
 // Smart contract metadata record
@@ -86,6 +89,13 @@ type Contract struct {
 	EndDate		time.Time   `json:"EndDate"`
 	Method	    string   `json:"Method"`
 	DiscountRate float64  `json:"DiscountRate"`
+}
+
+type Asset struct {
+Id string `json:"Id"`
+Status string `json:"Status"`
+Description string `json:"Description"`
+ModifiedDate string `json:"ModifiedDate"`
 }
 
 type Compatibility struct {
@@ -108,8 +118,21 @@ type Subsystem struct {
 	NumTxs		int		`json:"NumberOfTransactions"`
 }
 
+
+
+type MyTransaction struct {
+	
+	Date 		time.Time   `json:"Date"`
+	Description string   `json:"description"`
+	Operation 		string   `json:"Type"`
+	From		string   `json:"FromUserid"`
+	ToName	    string   `json:"ToName"`
+	
+}
+
+
 type Vehicle struct {
-	Id		string		`json:"VIN"`
+	Id		string		`json:"VIN"` //assetnum
 	Chassis		Subsystem	`json:"Chassis"`
 	Powertrain	Subsystem	`json:"Powertrain"`
 	Safety		Subsystem	`json:"Safety"`
@@ -133,6 +156,9 @@ type User struct {
 type AllTransactions struct{
 	Transactions []Transaction `json:"transactions"`
 }
+
+
+
 
 // Array for storing all operations
 type AllOperations struct{
@@ -304,7 +330,45 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		fmt.Println("Error creating feedback contract")
 		return nil, err
 	}
-	
+	////////////////init the asssets
+
+	var assets [5]Asset
+currentDateStr, _  := time.Parse(time.RFC822, "11 May 16 12:00 UTC")
+assets[0].Id = "229636"
+assets[0].Description="Lot of pipes"
+assets[0].Status = "Inventory"
+assets[0].ModifiedDate = currentDateStr
+
+assets[1].Id = "299893"
+assets[1].Description="Lot of pipes"
+assets[1].Status = "Inventory"
+assets[1].ModifiedDate = currentDateStr
+
+assets[2].Id = "330046"
+assets[2].Description="Lot of pipes"
+assets[2].Status = "Inventory"
+assets[2].ModifiedDate = currentDateStr
+
+assets[3].Id = "338665"
+assets[3].Description="Lot of pipes"
+assets[3].Status = "Inventory"
+assets[3].ModifiedDate = currentDateStr
+
+assets[4].Id = "341212"
+assets[4].Description="Lot of pipes"
+assets[4].Status = "Inventory"
+assets[4].ModifiedDate = currentDateStr
+
+for i:=0;i<len(assets);i++ {
+jsonAsBytes, _ = json.Marshal(assets[i])
+err = stub.PutState(assets[i].Id, jsonAsBytes)
+if err != nil {
+fmt.Println("Error creating assets")
+return nil, err
+}
+}
+
+
 	var cars [5]Vehicle
 
 	cars[0].Id = "1FTYR44VX2PB60564"
@@ -459,6 +523,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		t.updateEmbedded(stub,[]string {cars[i].Id,"Powertrain","Establish Active","120"})
 		t.updateEmbedded(stub,[]string {cars[i].Id,"Safety","Establish Active","137"})
 		t.updateEmbedded(stub,[]string {cars[i].Id,"Telematics","Establish Active","036"})
+
 	}
 
 	// Create an array of contract ids to keep track of all contracts
@@ -505,7 +570,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.addSmartContract(stub, args)
 	} else if function == "incrementReferenceNumber" {											//create a transaction
 		return t.incrementReferenceNumber(stub, args)
-	} 
+	}else if function == "createAsset" {											//create a transaction
+		return t.createAsset(stub, args)
+	}  
 		
 	fmt.Println("invoke did not find func: " + function)					//error
 
@@ -526,6 +593,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	if function == "getAllContracts" { return t.getAllContracts(stub) }
 	if function == "getReferenceNumber" { return t.getReferenceNumber(stub) }
 	if function == "getCompatibility" { return t.getCompatibility(stub,args[0]) }
+	if function == "getAssetState" { return t.getAssetState(stub,args[0]) }
 	
 	fmt.Println("query did not find func: " + function)						//error
 
@@ -577,6 +645,20 @@ func (t *SimpleChaincode) getSubsystem(stub shim.ChaincodeStubInterface,VIN stri
 
 	return subsystemAsBytes, nil
 }
+
+func (t *SimpleChaincode) getAssetState(stub shim.ChaincodeStubInterface,assetId string)([]byte, error){
+	
+	fmt.Println("Start getStatus()")
+fmt.Println("Looking for asset with Id " + assetId);
+
+assetAsBytes, _ := stub.GetState(assetId)
+
+return assetAsBytes, nil
+}
+
+
+
+
 
 // ============================================================================================================================
 // Get all transactions that involve a particular user
@@ -1130,6 +1212,14 @@ func (t *SimpleChaincode) updateEmbedded(stub shim.ChaincodeStubInterface, args 
 	}
 	return nil, nil
 }
+
+
+
+
+
+///////////////////////
+
+
 
 func (t *SimpleChaincode) setCompatibility(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
