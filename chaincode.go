@@ -570,9 +570,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.addSmartContract(stub, args)
 	} else if function == "incrementReferenceNumber" {											//create a transaction
 		return t.incrementReferenceNumber(stub, args)
-	}else if function == "createAsset" {											//create a transaction
-		return t.createAsset(stub, args)
-	}  
+	}
 		
 	fmt.Println("invoke did not find func: " + function)					//error
 
