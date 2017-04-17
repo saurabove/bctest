@@ -333,7 +333,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	////////////////init the asssets
 
 	var assets [5]Asset
-currentDateStr, _  := time.Parse(time.RFC822, "11 May 16 12:00 UTC")
+//currentDateStr, _  := time.Parse(time.RFC822, "11 May 16 12:00 UTC")
 assets[0].Id = "229636"
 assets[0].Description="Lot of pipes"
 assets[0].Status = "Inventory"
