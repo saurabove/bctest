@@ -337,27 +337,27 @@ currentDateStr, _  := time.Parse(time.RFC822, "11 May 16 12:00 UTC")
 assets[0].Id = "229636"
 assets[0].Description="Lot of pipes"
 assets[0].Status = "Inventory"
-assets[0].ModifiedDate = currentDateStr
+assets[0].ModifiedDate = "11 May 16 12:00 UTC"
 
 assets[1].Id = "299893"
 assets[1].Description="Lot of pipes"
 assets[1].Status = "Inventory"
-assets[1].ModifiedDate = currentDateStr
+assets[1].ModifiedDate = "11 May 16 12:00 UTC"
 
 assets[2].Id = "330046"
 assets[2].Description="Lot of pipes"
 assets[2].Status = "Inventory"
-assets[2].ModifiedDate = currentDateStr
+assets[2].ModifiedDate = "11 May 16 12:00 UTC"
 
 assets[3].Id = "338665"
 assets[3].Description="Lot of pipes"
 assets[3].Status = "Inventory"
-assets[3].ModifiedDate = currentDateStr
+assets[3].ModifiedDate = "11 May 16 12:00 UTC"
 
 assets[4].Id = "341212"
 assets[4].Description="Lot of pipes"
 assets[4].Status = "Inventory"
-assets[4].ModifiedDate = currentDateStr
+assets[4].ModifiedDate = "11 May 16 12:00 UTC"
 
 for i:=0;i<len(assets);i++ {
 jsonAsBytes, _ = json.Marshal(assets[i])
@@ -594,7 +594,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	if function == "getReferenceNumber" { return t.getReferenceNumber(stub) }
 	if function == "getCompatibility" { return t.getCompatibility(stub,args[0]) }
 	if function == "getAssetState" { return t.getAssetState(stub,args[0]) }
-	
+
 	fmt.Println("query did not find func: " + function)						//error
 
 	return nil, errors.New("Received unknown function query")
