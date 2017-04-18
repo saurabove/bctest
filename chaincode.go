@@ -1238,7 +1238,7 @@ crAsset[0].ModifiedDate = stDate
 
 
 jsonAsBytes, _ = json.Marshal(assets[i])
-err = stub.PutState(crAsset[i].Id, jsonAsBytes)
+err = stub.PutState(crAsset.Id, jsonAsBytes)
 fmt.Println("Success updated")
 if err != nil {
 fmt.Println("Error creating assets")
