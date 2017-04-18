@@ -571,7 +571,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	} else if function == "incrementReferenceNumber" {											//create a transaction
 		return t.incrementReferenceNumber(stub, args)
 	}
-		
+	//
+	else if function == "updateAssetState" {											//create a transaction
+		return t.updateAssetState(stub, args)
+	}
+
+
+
 	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation")
@@ -1216,7 +1222,29 @@ func (t *SimpleChaincode) updateEmbedded(stub shim.ChaincodeStubInterface, args 
 
 
 ///////////////////////
+func (t *SimpleChaincode) updateAssetState(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
+
+crDateStr := time.Now().Format(time.RFC822)
+	stDate, _  := time.Parse(time.RFC822, crDateStr)
+	
+	var crAsset Asset
+
+crAsset[0].Id = args[0]
+crAsset[0].Description="Lot of pipes"
+crAsset[0].Status = args[1]
+crAsset[0].ModifiedDate = stDate
+
+jsonAsBytes, _ = json.Marshal(assets[i])
+err = stub.PutState(assets[i].Id, jsonAsBytes)
+fmt.Println("Success updated")
+if err != nil {
+fmt.Println("Error creating assets")
+return nil, err}
+
+
+
+}
 
 
 func (t *SimpleChaincode) setCompatibility(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
