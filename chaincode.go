@@ -1235,8 +1235,10 @@ crAsset[0].Description="Lot of pipes"
 crAsset[0].Status = args[1]
 crAsset[0].ModifiedDate = stDate
 
+
+
 jsonAsBytes, _ = json.Marshal(assets[i])
-err = stub.PutState(assets[i].Id, jsonAsBytes)
+err = stub.PutState(crAsset[i].Id, jsonAsBytes)
 fmt.Println("Success updated")
 if err != nil {
 fmt.Println("Error creating assets")
