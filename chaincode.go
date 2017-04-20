@@ -1,4 +1,3 @@
-//heloo test111
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -38,6 +37,7 @@ type SimpleChaincode struct {
 // Maximum number of transactions to return
 const NUM_TX_TO_RETURN = 27
 const NUM_OP_TO_RETURN = 27
+const NUM_TR_TO_RETURN = 27
 
 // Smart Contract Id, Compatibility Reference numbers
 const TRAVEL_CONTRACT   = "Paris"
@@ -76,6 +76,24 @@ type Operation struct {
 	From		string   `json:"FromPres"`
 }
 
+// Asset record
+	type Asset struct {
+	Id		string		`json:"Id"`
+	Status		string		`json:"Status"`
+	Description	string		`json:"Description"`
+	ModifiedDate	string		`json:"ModifiedDate"`
+}
+
+// Asset Transition record
+type Transition struct {
+	Date 		time.Time	`json:"Date"`
+	AssetId		string		`json:"AssetId"`
+	Operation	string		`json:"Operation"`
+	Description	string		`json:"Description"`
+	From		string		`json:"From"`
+	To		string		`json:"To"`
+}
+
 // Smart contract metadata record
 type Contract struct {
 	Id			string   `json:"ID"`
@@ -89,13 +107,6 @@ type Contract struct {
 	EndDate		time.Time   `json:"EndDate"`
 	Method	    string   `json:"Method"`
 	DiscountRate float64  `json:"DiscountRate"`
-}
-
-type Asset struct {
-Id string `json:"Id"`
-Status string `json:"Status"`
-Description string `json:"Description"`
-ModifiedDate string `json:"ModifiedDate"`
 }
 
 type Compatibility struct {
@@ -157,12 +168,14 @@ type AllTransactions struct{
 	Transactions []Transaction `json:"transactions"`
 }
 
-
-
-
 // Array for storing all operations
 type AllOperations struct{
 	Operations []Operation `json:"operations"`
+}
+
+// Array for storing all transitions
+type AllTransitions struct{
+	Transitions []Transition `json:"transitions"`
 }
 
 // ============================================================================================================================
@@ -330,43 +343,43 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		fmt.Println("Error creating feedback contract")
 		return nil, err
 	}
-	////////////////init the asssets
 
 	var assets [5]Asset
-//currentDateStr, _  := time.Parse(time.RFC822, "11 May 16 12:00 UTC")
-assets[0].Id = "229636"
-assets[0].Description="Lot of pipes"
-assets[0].Status = "Inventory"
-assets[0].ModifiedDate = "11 May 16 12:00 UTC"
+	currentDateStr := time.Now().Format(time.RFC822)
 
-assets[1].Id = "299893"
-assets[1].Description="Lot of pipes"
-assets[1].Status = "Inventory"
-assets[1].ModifiedDate = "11 May 16 12:00 UTC"
+	assets[0].Id = "229636"
+	assets[0].Description="Lot of pipes"
+	assets[0].Status = "Inventory"
+	assets[0].ModifiedDate = currentDateStr
 
-assets[2].Id = "330046"
-assets[2].Description="Lot of pipes"
-assets[2].Status = "Inventory"
-assets[2].ModifiedDate = "11 May 16 12:00 UTC"
+	assets[1].Id = "299893"
+	assets[1].Description="Lot of pipes"
+	assets[1].Status = "Inventory"
+	assets[1].ModifiedDate = currentDateStr
 
-assets[3].Id = "338665"
-assets[3].Description="Lot of pipes"
-assets[3].Status = "Inventory"
-assets[3].ModifiedDate = "11 May 16 12:00 UTC"
+	assets[2].Id = "330046"
+	assets[2].Description="Lot of pipes"
+	assets[2].Status = "Inventory"
+	assets[2].ModifiedDate = currentDateStr
 
-assets[4].Id = "341212"
-assets[4].Description="Lot of pipes"
-assets[4].Status = "Inventory"
-assets[4].ModifiedDate = "11 May 16 12:00 UTC"
+	assets[3].Id = "338665"
+	assets[3].Description="Lot of pipes"
+	assets[3].Status = "Inventory"
+	assets[3].ModifiedDate = currentDateStr
 
-for i:=0;i<len(assets);i++ {
-jsonAsBytes, _ = json.Marshal(assets[i])
-err = stub.PutState(assets[i].Id, jsonAsBytes)
-if err != nil {
-fmt.Println("Error creating assets")
-return nil, err
-}
-}
+	assets[4].Id = "341212"
+	assets[4].Description="Lot of pipes"
+	assets[4].Status = "Inventory"
+	assets[4].ModifiedDate = currentDateStr
+
+	for i:=0;i<len(assets);i++ {
+		jsonAsBytes, _ = json.Marshal(assets[i])
+		err = stub.PutState(assets[i].Id, jsonAsBytes)
+		if err != nil {
+			fmt.Println("Error creating assets")
+			return nil, err
+		}
+	}
 
 
 	var cars [5]Vehicle
@@ -537,7 +550,11 @@ return nil, err
 		fmt.Println("Error storing contract Ids on blockchain")
 		return nil, err
 	}
-	
+
+	for i:=0;i<len(assets);i++ {
+		t.updateAsset(stub,[]string {assets[i].Id,"Initialize","Stock","A lot of pipes"})
+	}
+
 	return nil, nil
 }
 
@@ -558,7 +575,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 
 	
 	// Handle different functions
-	if function == "init" {													//initialize the chaincode state, used as reset
+	if function == "init" {														//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
 	} else if function == "transferPoints" {											//create a transaction
 		return t.transferPoints(stub, args)
@@ -568,15 +585,13 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.setCompatibility(stub, args)
 	} else if function == "addSmartContract" {											//create a transaction
 		return t.addSmartContract(stub, args)
-	} else if function == "incrementReferenceNumber" {											//create a transaction
+	} else if function == "incrementReferenceNumber" {										//create a transaction
 		return t.incrementReferenceNumber(stub, args)
-	}
-	//
-	else if function == "updateAssetState" {											//create a transaction
+	} else if function == "updateAssetState" {											//create a transaction
 		return t.updateAssetState(stub, args)
+	} else if function == "updateAsset" {												//create a transition
+		return t.updateAsset(stub, args)
 	}
-
-
 
 	fmt.Println("invoke did not find func: " + function)					//error
 
@@ -592,6 +607,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	
 	if function == "getTxs" { return t.getTxs(stub, args[1]) }
 	if function == "getOps" { return t.getOps(stub, args[0],args[1]) }
+	if function == "getTrs" { return t.getTrs(stub, args[0]) }
 	if function == "getUserAccount" { return t.getUserAccount(stub, args[1]) }
 	if function == "getSubsystem" { return t.getSubsystem(stub,args[0],args[1]) }
 	if function == "getAllContracts" { return t.getAllContracts(stub) }
@@ -1217,37 +1233,25 @@ func (t *SimpleChaincode) updateEmbedded(stub shim.ChaincodeStubInterface, args 
 	return nil, nil
 }
 
-
-
-
-
-///////////////////////
 func (t *SimpleChaincode) updateAssetState(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
-
-crDateStr := time.Now().Format(time.RFC822)
-	stDate, _  := time.Parse(time.RFC822, crDateStr)
+	crDateStr := time.Now().Format(time.RFC822)
 	
 	var crAsset Asset
 
-crAsset[0].Id = args[0]
-crAsset[0].Description="Lot of pipes"
-crAsset[0].Status = args[1]
-crAsset[0].ModifiedDate = stDate
+	crAsset.Id = args[0]
+	crAsset.Description="Lot of pipes"
+	crAsset.Status = args[1]
+	crAsset.ModifiedDate = crDateStr
 
-
-
-jsonAsBytes, _ = json.Marshal(crAsset)
-err = stub.PutState(crAsset.Id, jsonAsBytes)
-fmt.Println("Success updated")
-if err != nil {
-fmt.Println("Error creating assets")
-return nil, err}
-
-
-
+	jsonAsBytes, _ := json.Marshal(crAsset)
+	err := stub.PutState(crAsset.Id, jsonAsBytes)
+	fmt.Println("Success updated")
+	if err != nil {
+		fmt.Println("Error updating asset")
+	}
+	return nil, err
 }
-
 
 func (t *SimpleChaincode) setCompatibility(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
@@ -1314,4 +1318,94 @@ func (t *SimpleChaincode) setCompatibility(stub shim.ChaincodeStubInterface, arg
 		return nil, err
 	}
 	return nil, nil
+}
+
+// ============================================================================================================================
+// Update subsystem with new embedded operating software
+// ============================================================================================================================
+func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []string) ([]byte, error) {
+
+	var err error
+
+	fmt.Println("Running updateAsset()")
+	
+	// Get asset from BC and update version
+	fmt.Println("AssetId is " + args[0])
+	assetAsBytes, _ := stub.GetState(args[0]) 
+	var asset Asset
+	json.Unmarshal(assetAsBytes,&asset)
+
+	currentDateStr := time.Now().Format(time.RFC822)
+	startDate, _  := time.Parse(time.RFC822, currentDateStr)
+
+	var tr Transition
+	tr.Date		= startDate
+	tr.AssetId	= args[0]
+	tr.Operation	= args[1]
+	tr.From		= asset.Status
+	tr.To		= args[2]
+	tr.Description 	= args[3] 
+
+	asset.Status = tr.To
+	asset.Description = tr.Description
+
+	//Commit asset back to ledger
+	fmt.Println("updateAsset commit updated asset To ledger");
+	assetAsBytes, _ = json.Marshal(asset)
+	err = stub.PutState(tr.AssetId,assetAsBytes)	
+	if err != nil {
+		return nil, err
+	}
+	
+	//get the AllTransitions index
+	allTrAsBytes, err := stub.GetState("allTr")
+	if err != nil {
+		return nil, errors.New("updateAsset: Failed to get all Transitions")
+	}
+
+	//Update transitions array and commit to BC
+	fmt.Println("updateAsset commit transition to ledger");
+	var trs AllTransitions
+	json.Unmarshal(allTrAsBytes,&trs)
+	trs.Transitions = append(trs.Transitions,tr)
+	trsAsBytes, _ := json.Marshal(trs)
+	err = stub.PutState("allTr", trsAsBytes)	
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// ============================================================================================================================
+// Get all transitions that involve a particular asset
+// ============================================================================================================================
+func (t *SimpleChaincode) getTrs(stub shim.ChaincodeStubInterface,assetId string)([]byte, error){
+	
+	var res AllTransitions
+
+	fmt.Println("Start getTrs")
+	fmt.Println("Looking for " + assetId)
+
+	//get the AllTransitions index
+	allTrAsBytes, err := stub.GetState("allTr")
+	if err != nil {
+		return nil, errors.New("Failed to get all Transitions")
+	}
+
+	var trs AllTransitions
+	json.Unmarshal(allTrAsBytes, &trs)
+	numTrs := len(trs.Transitions)
+
+	for i:=numTrs-1;i>=0;i-- {
+	    if (trs.Transitions[i].AssetId == assetId) {
+			res.Transitions = append(res.Transitions, trs.Transitions[i])
+		}
+		
+	    if (len(res.Transitions) >= NUM_TR_TO_RETURN) { break }
+	}
+
+	resAsBytes, _ := json.Marshal(res)
+
+	return resAsBytes, nil
+	
 }
