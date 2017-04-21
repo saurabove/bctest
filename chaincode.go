@@ -1382,7 +1382,7 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 	}
    //updating maximo************
     var stat string="NOT READY"
-	if args[1]="accepted"  {
+	if args[1]=="accepted"  {
 	 stat="OPERATING"
 }
 
