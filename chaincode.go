@@ -27,9 +27,9 @@ import (
 	"strings"
 	"time"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"io/ioutil"
+	//"io/ioutil"
     "net/http"
-    "log"
+    
 
 )
 
@@ -1379,28 +1379,14 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 	if err != nil {
 		return nil, err
 	}
-   //updating maximo
+   //updating maximo************
 
-	req, err := http.NewRequest("PUT","http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=Go Success1 Pipe bundle&_lid=maxadmin&_lpwd=maxadmin@GSCIND", nil)
+	req, _ := http.PUT("http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=GoSuccess &_lid=maxadmin&_lpwd=maxadmin@GSCIND")
+    //response, _ := ioutil.ReadAll(req.Body)
+   // fmt.Println(string(response))
 
-	// just printing the url that is formed 
-	//fmt.Println("http://170.226.21.107/maxrest/rest/os/mxasset?_lean=1&_lid=maxadmin&_lpwd=maxadmin@GSCIND&siteid=BEDFORD&assetnum="+myasset+"&description="+mydescp)
+///maximo updated*************
 
-    if err != nil {
-        log.Fatal(err)
-    }
-    req.Header.Set("Content-Type", "text/plain")
-
-    client := &http.Client{}
-    res, err := client.Do(req)
-    if err != nil {
-        log.Fatal(err)
-    }
-    output, _ := ioutil.ReadAll(res.Body)
-    fmt.Println(string(output))  // printing the output response of the call
-    defer res.Body.Close()
-///maximo updated
-   
 	return nil, nil
 }
 
