@@ -1253,10 +1253,10 @@ func (t *SimpleChaincode) updateAssetState(stub shim.ChaincodeStubInterface, arg
 	
 	//updating maximo
 
-	req, err := http.NewRequest("PUT","http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=Go Success Pipe bundle&_lid=maxadmin&_lpwd=maxadmin@GSCIND", nil)
+	req, err := http.NewRequest("PUT","http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=Go Success1 Pipe bundle&_lid=maxadmin&_lpwd=maxadmin@GSCIND", nil)
 
 	// just printing the url that is formed 
-	fmt.Println("http://170.226.21.107/maxrest/rest/os/mxasset?_lean=1&_lid=maxadmin&_lpwd=maxadmin@GSCIND&siteid=BEDFORD&assetnum="+myasset+"&description="+mydescp)
+	//fmt.Println("http://170.226.21.107/maxrest/rest/os/mxasset?_lean=1&_lid=maxadmin&_lpwd=maxadmin@GSCIND&siteid=BEDFORD&assetnum="+myasset+"&description="+mydescp)
 
     if err != nil {
         log.Fatal(err)
