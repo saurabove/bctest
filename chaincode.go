@@ -1395,6 +1395,7 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 
     client := &http.Client{}
     res, err := client.Do(req)
+    defer res.Body.Close()
 ///maximo updated*************
 
 	return nil, nil
