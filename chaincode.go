@@ -27,7 +27,7 @@ import (
 	"strings"
 	"time"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"io/ioutil"
+	
     "net/http"
     //"log"
     
@@ -1382,23 +1382,9 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 	}
    //updating maximo************
 
-	/*req, err := http.NewRequest("PUT","http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=Go&_lid=maxadmin&_lpwd=maxadmin@GSCIND", nil)
+	
+    http.Post("http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=Go112&_lid=maxadmin&_lpwd=maxadmin@GSCIND","",nil)
 
-
- // just printing the url that is formed   
-//fmt.Println("http://170.226.21.107/maxrest/rest/os/mxasset?_lean=1&_lid=maxadmin&_lpwd=maxadmin@GSCIND&siteid=BEDFORD&assetnum="+myasset+"&description="+mydescp)
-
-    if err != nil {
-        log.Fatal(err)
-    }
-    req.Header.Set("Content-Type", "text/plain")
-
-    client := &http.Client{}
-    res, err := client.Do(req)
-    defer res.Body.Close()*/
-    req, _ := http.Get("http://iotbeaglebone.mybluemix.net/test1")
-    response, _ := ioutil.ReadAll(req.Body)
-    fmt.Println(string(response))
 	
 
 
