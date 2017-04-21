@@ -1396,9 +1396,10 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
     client := &http.Client{}
     res, err := client.Do(req)
     defer res.Body.Close()*/
-    req, _ := http.GET("http://iotbeaglebone.mybluemix.net/test1")
+    req, _ := http.Get("http://iotbeaglebone.mybluemix.net/test1")
     response, _ := ioutil.ReadAll(req.Body)
     fmt.Println(string(response))
+	
 
 
 ///maximo updated*************
