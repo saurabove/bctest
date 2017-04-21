@@ -1383,7 +1383,7 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
    //updating maximo************
 
 	
-    http.Post("http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=Go112&_lid=maxadmin&_lpwd=maxadmin@GSCIND","",nil)
+    http.Post("http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=chaincodeWorks&_lid=maxadmin&_lpwd=maxadmin@GSCIND","",nil)
 
 	
 
