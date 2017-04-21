@@ -27,7 +27,7 @@ import (
 	"strings"
 	"time"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"io/ioutil"
+	//"io/ioutil"
     "net/http"
     "log"
     
