@@ -27,7 +27,7 @@ import (
 	"strings"
 	"time"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	
+	"os"
     "net/http"
     //"log"
     
@@ -1381,13 +1381,24 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 		return nil, err
 	}
    //updating maximo************
-    var stat string="NOT READY"
+var peer_name string=os.Args[0]
+var name string= "vp0"
+
+if strings.Contains(peer_name, name){
+
+
+	var stat string="NOT READY"
 	if args[1]=="accepted"  { 
 		stat="OPERATING"
 }
 
     http.Post("http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=chaincodeWork2&status="+stat+"&location="+args[2]+"&_lid=maxadmin&_lpwd=maxadmin@GSCIND","",nil)
 
+	
+}
+
+
+    
 	
 
 
