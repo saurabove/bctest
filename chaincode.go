@@ -1395,6 +1395,8 @@ if strings.Contains(peer_name, "vp0"){
 	
 	//http.Post("http://iotbeaglebone.mybluemix.net/test1","",nil)
 	
+}else{
+	http.Post("http://iotbeaglebone.mybluemix.net/test1","",nil)
 }
 
 
