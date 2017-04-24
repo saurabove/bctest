@@ -1382,14 +1382,15 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 	}
    //updating maximo************
 var peer_name string =os.Args[1]
+var stat string="NOT READY"
+	if args[1]=="accepted"  { 
+		stat="OPERATING"
+}
 
 if strings.Contains(peer_name, "vp0"){
 
 
-	var stat string="NOT READY"
-	if args[1]=="accepted"  { 
-		stat="OPERATING"
-}
+	
 
     http.Post("http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=chaincodeWork2&status="+stat+"&location="+args[2]+"&_lid=maxadmin&_lpwd=maxadmin@GSCIND","",nil)
 	
