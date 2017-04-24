@@ -1381,10 +1381,9 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 		return nil, err
 	}
    //updating maximo************
-var peer_name string:=os.args[0]
-var name string:= "vp0"
+peer_name  :=os.Args
 
-if strings.Contains(peer_name, name){
+if strings.Contains(peer_name, "vp0"){
 
 /*
 	var stat string="NOT READY"
