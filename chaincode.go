@@ -1390,7 +1390,7 @@ func (t *SimpleChaincode) updateAsset(stub shim.ChaincodeStubInterface,args []st
 }
 var peer_name string =os.Args[1]
 
-if strings.Contains(peer_name, "vp0"){
+if strings.Contains(peer_name, "vp1"){
 
 //Get Assetuid
   req, _ :=http.Get("http://170.226.21.107/maxrest/rest/mbo/asset?_lid=maxadmin&_lpwd=maxadmin@GSCIND&assetnum="+args[4]+"-"+args[0])
