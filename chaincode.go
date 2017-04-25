@@ -1393,7 +1393,7 @@ var peer_name string =os.Args[1]
 if strings.Contains(peer_name, "vp0"){
 
 //Get Assetuid
-  req, _ :=http.Get("http://170.226.21.107/maxrest/rest/mbo/asset?_lid=maxadmin&_lpwd=maxadmin@GSCIND&assetnum=EPC98-229636")
+  req, _ :=http.Get("http://170.226.21.107/maxrest/rest/mbo/asset?_lid=maxadmin&_lpwd=maxadmin@GSCIND&assetnum="+args[4]+"-"+args[0])
   response, _ := ioutil.ReadAll(req.Body)
   //fmt.Println(string(response))
 
