@@ -22,6 +22,7 @@ package main
 import (
 	"errors"
 	"encoding/xml"
+	"io/ioutil"
 	"fmt"
 	"strconv"
 	"encoding/json"
