@@ -1430,7 +1430,7 @@ req, _ :=http.Get("http://170.226.21.107/maxrest/rest/mbo/asset?_lid=maxadmin&_l
 
 	
 //Post to change state
-    http.Post("http://170.226.21.107/maxrest/rest/os/mxasset/attrVal?_action=change&description=chaincodeWork2&status="+stat+"&location="+args[2]+"&_lid=maxadmin&_lpwd=maxadmin@GSCIND","",nil)
+    http.Post("http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=chaincodeWork2&status="+stat+"&location="+args[2]+"&_lid=maxadmin&_lpwd=maxadmin@GSCIND","",nil)
 	
 	fmt.Println("printing peer name osarg1 & url: http://170.226.21.107/maxrest/rest/os/mxasset/2139?_action=change&description=chaincodeWork2&status="+stat+"&location="+args[2]+"&_lid=maxadmin&_lpwd=maxadmin@GSCIND")
 	
