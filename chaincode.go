@@ -21,8 +21,8 @@ package main
 
 import (
 	"errors"
-	"encoding/xml"
-	"io/ioutil"
+	//"encoding/xml"
+	//"io/ioutil"
 	"fmt"
 	"strconv"
 	"encoding/json"
@@ -1392,41 +1392,7 @@ var peer_name string =os.Args[1]
 
 if strings.Contains(peer_name, "vp0"){
 
-//Get Assetuid
 
-req, _ :=http.Get("http://170.226.21.107/maxrest/rest/mbo/asset?_lid=maxadmin&_lpwd=maxadmin@GSCIND&assetnum=EPC98-229636")
-  response, _ := ioutil.ReadAll(req.Body)
-  //fmt.Println(string(response))
-
-  type XMLQuery struct {
-  Loc string `xml:",chardata"`
-}
-
-  var l XMLQuery
-  decoder := xml.NewDecoder(strings.NewReader(string(response)))
-  for {
-
-    token, _ := decoder.Token()
-
-    if token == nil {
-      break
-    }
-
-    switch Element := token.(type) {
-    case xml.StartElement:
-      if Element.Name.Local == "ASSETUID" {
-        fmt.Println("Element name is : ", Element.Name.Local)
-
-        err := decoder.DecodeElement(&l, &Element)
-        if err != nil {
-          fmt.Println(err)
-        }
-
-        attrVal :=l.Loc
-        fmt.Println("Element value is : ", attrVal)
-      }
-    }
-  }
 
 	
 //Post to change state
